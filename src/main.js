@@ -32,4 +32,4 @@ store.commit('increment')
 console.log(store.state.count) // -> 1
 
 store.commit('increment')
-console.log(store.state.count) // -> 1
+console.log(store.state.count) // -> 2
