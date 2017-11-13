@@ -1,5 +1,5 @@
 # whatis
-Just a Vuejs app sample
+Just a Vuejs app demo
 
 > View built on top of search engine
 
