@@ -5,8 +5,12 @@ import Vuex from 'vuex'
 import App from './App'
 import router from './router'
 
-Vue.config.productionTip = false
+import VueMaterial from 'vue-material'
+import 'vue-material/dist/vue-material.min.css'
 
+Vue.use(VueMaterial)
+
+Vue.config.productionTip = false
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
@@ -29,7 +33,7 @@ new Vue({
 })
 
 store.commit('increment')
-console.log(store.state.count) // -> 1
+// console.log(store.state.count) // -> 1
 
-store.commit('increment')
-console.log(store.state.count) // -> 2
+// store.commit('increment')
+// console.log(store.state.count) // -> 2
