@@ -30,6 +30,9 @@ export default {
   methods: {
     getResults: function () {
       Wikimedia.search(this.type)
+      .then((results) => {
+        console.log(results)
+      })
     }
   }
 }
@@ -39,7 +42,8 @@ export default {
 <style scoped>
 .search__input {
   width: 400px;
-  margin: 70px auto;
+  margin: auto;
+  margin-top: 70px;
   padding: 10px;
   min-height: 0;
 }

@@ -1,7 +1,5 @@
-# whatis
-Just a Vuejs app demo
-
-> View built on top of search engine
+# insight
+> Search modernized
 
 ## Build Setup
 
@@ -26,3 +24,8 @@ npm test
 ```
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+## Used APIs/sources
+
+* [Wikimedia API search](https://www.mediawiki.org/wiki/API:Search)
+* [Wikimedia REST API](https://en.wikipedia.org/api/rest_v1/#/)
