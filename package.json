@@ -1,7 +1,7 @@
 {
-  "name": "whatis",
+  "name": "insight",
   "version": "1.0.0",
-  "description": "View built on top of search engine",
+  "description": "Search modernized",
   "author": "Jeremie CORPINOT",
   "private": true,
   "scripts": {

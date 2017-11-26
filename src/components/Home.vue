@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <h1>what is {{ type }}</h1>
+    <h1>insight {{ type }}</h1>
     <md-field class="search__input md-elevation-2">
       <md-input v-model="type"></md-input>
     </md-field>
@@ -11,7 +11,7 @@
 import Wikimedia from '../services/wikimedia'
 
 export default {
-  name: 'HelloWorld',
+  name: 'Home',
   data () {
     return {
       type: '',
