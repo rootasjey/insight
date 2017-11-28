@@ -4,11 +4,15 @@
     <md-field class="search__input md-elevation-2">
       <md-input v-model="type"></md-input>
     </md-field>
+    <li v-for="item in getItems">
+      {{ item }}
+    </li>
   </div>
 </template>
 
 <script>
 import Wikimedia from '../services/wikimedia'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'Home',
@@ -17,6 +21,11 @@ export default {
       type: '',
       timer: null
     }
+  },
+  computed: {
+    ...mapGetters([
+      'getItems'
+    ])
   },
   watch: {
     type: function (keywords) {
@@ -31,9 +40,14 @@ export default {
     getResults: function () {
       Wikimedia.search(this.type)
       .then((results) => {
-        console.log(results)
+        results.query.search.map((item) => {
+          this.addItem(item.title)
+        })
       })
-    }
+    },
+    ...mapActions([
+      'addItem'
+    ])
   }
 }
 </script>

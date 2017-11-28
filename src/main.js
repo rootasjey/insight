@@ -15,11 +15,21 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    count: 0
+    items: []
+  },
+  getters: {
+    getItems: state => {
+      return state.items
+    }
   },
   mutations: {
-    increment (state) {
-      state.count++
+    addItem (state, item) {
+      state.items = [...state.items, item]
+    }
+  },
+  actions: {
+    addItem ({ commit }, item) {
+      commit('addItem', item)
     }
   }
 })
@@ -27,13 +37,8 @@ const store = new Vuex.Store({
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store: store,
   router,
   template: '<App/>',
   components: { App }
 })
-
-store.commit('increment')
-// console.log(store.state.count) // -> 1
-
-// store.commit('increment')
-// console.log(store.state.count) // -> 2
