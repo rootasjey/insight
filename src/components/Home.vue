@@ -32,7 +32,7 @@
 import Wikimedia from '../services/wikimedia'
 import { mapGetters, mapActions } from 'vuex'
 import { GET_ITEMS } from '../types/getter-types'
-import { ADD_ITEM_ACTION } from '../types/action-types'
+import { ADD_ITEM_ACTION, CLEAR_ITEMS_ACTION } from '../types/action-types'
 
 export default {
   name: 'Home',
@@ -60,6 +60,7 @@ export default {
     getResults: function () {
       Wikimedia.search(this.type)
       .then((results) => {
+        this.clearItems()
         results.query.search.map((item) => {
           this.addItem({'snippet': item.snippet, 'pageId': item.pageid, 'title': item.title})
         })
@@ -69,7 +70,8 @@ export default {
       alert('Page id of this item: ' + arg)
     },
     ...mapActions({
-      addItem: ADD_ITEM_ACTION
+      addItem: ADD_ITEM_ACTION,
+      clearItems: CLEAR_ITEMS_ACTION
     })
   }
 }
