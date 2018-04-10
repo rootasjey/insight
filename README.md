@@ -1,7 +1,13 @@
 # insight
 > Search modernized
 
+## What is it ?
+
+It's an automated wikipedia exposé. It presents you information in an interactive way.
+
 ## Build Setup
+
+This project is created with [Vue.js](https://vuejs.org).
 
 ``` bash
 # install dependencies
@@ -27,5 +33,10 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 
 ## Used APIs/sources
 
-* [Wikimedia API search](https://www.mediawiki.org/wiki/API:Search)
+### Wikimedia
+
+* [Wikimedia search API](https://www.mediawiki.org/wiki/API:Search)
 * [Wikimedia REST API](https://en.wikipedia.org/api/rest_v1/#/)
+* [Wikimedia - Extend search results](https://www.mediawiki.org/wiki/API:Page_info_in_search_results)
+* [Wikimedia API: Query](https://www.mediawiki.org/wiki/API:Query)
+

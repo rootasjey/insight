@@ -4,20 +4,20 @@
     <md-field class="search__input md-elevation-2">
       <md-input v-model="type"></md-input>
     </md-field>
-    <li v-for="item in GET_ITEMS">
+    <li v-for="item in GET_ITEMS" :key="item.pageId">
        <md-card class="md-primary">
         <md-card-header>
           <md-card-header-text>
             <div class="md-title">{{item.title}}</div>
               <div class="md-subhead">
                 <md-content class="md-scrollbar">
-                  {{item.snippet}}
+                  <span v-html="item.snippet"></span>
                 </md-content>
               </div>
           </md-card-header-text>
           
           <md-card-media md-medium>
-            <img src="" alt="Avatar"/>
+            <img :src="item.thumbnail" alt="Avatar"/>
           </md-card-media>
         </md-card-header>
         <md-button @click.stop="alertCustom(item.pageId)" class="md-fab md-primary md-alignment-bottom-right">
@@ -61,8 +61,16 @@ export default {
       Wikimedia.search(this.type)
       .then((results) => {
         this.clearItems()
-        results.query.search.map((item) => {
-          this.addItem({'snippet': item.snippet, 'pageId': item.pageid, 'title': item.title})
+        results.query.pages.map((item) => {
+          // console.log(item)
+          this.addItem(
+            {
+              title: item.title,
+              pageId: item.pageid,
+              snippet: item.terms ? item.terms.description.reduce((str, desc) => { return str + desc }, '') : '',
+              thumbnail: item.thumbnail ? item.thumbnail.source : ''
+            }
+          )
         })
       })
     },
