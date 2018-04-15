@@ -4,11 +4,15 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 
-import VueMaterial from 'vue-material'
-import 'vue-material/dist/vue-material.min.css'
+// import VueMaterial from 'vue-material'
+// import 'vue-material/dist/vue-material.min.css'
+import Vuetify from 'vuetify'
+import 'vuetify/dist/vuetify.min.css'
+
 import { store } from './store/store'
 
-Vue.use(VueMaterial)
+// Vue.use(VueMaterial)
+Vue.use(Vuetify)
 
 Vue.config.productionTip = false
 
