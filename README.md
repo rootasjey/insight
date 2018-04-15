@@ -1,5 +1,11 @@
 # insight
-> Search modernized
+> Knowledge modernized
+
+## Screenshots
+
+![screenshot 1](./screenshots/screenshot-1.png)
+![screenshot 1](./screenshots/screenshot-2.png)
+![screenshot 1](./screenshots/screenshot-3.png)
 
 ## What is it ?
 
@@ -39,4 +45,4 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 * [Wikimedia REST API](https://en.wikipedia.org/api/rest_v1/#/)
 * [Wikimedia - Extend search results](https://www.mediawiki.org/wiki/API:Page_info_in_search_results)
 * [Wikimedia API: Query](https://www.mediawiki.org/wiki/API:Query)
-
+* [Browser speech synthesis](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis)
