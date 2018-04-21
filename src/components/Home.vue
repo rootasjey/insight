@@ -2,19 +2,18 @@
   <v-app>
     <h1 v-if="exactMatch === null" class="main-default-title">insight</h1>
 
-    <v-parallax :src="heroImage" >
-      <v-layout v-if="exactMatch" column align-center justify-center>
+    <div v-if="exactMatch" v-bind:style="heroImageStyle" class="hero-container">
+      <div class="hero-caption">
         <v-icon class="play-button" v-on:click="previewSpeech">play_circle_filled</v-icon>
-
         <div class="hero-title-container">
-          <h1>{{exactMatch.title}}</h1>
+            <h1>{{exactMatch.title}}</h1>
         </div>
 
         <div class="hero-description-container" v-if="exactMatch.terms">
           <h3>{{exactMatch.terms.description.join('. ')}}</h3>
         </div>
-      </v-layout>
-    </v-parallax>
+      </div>
+    </div>
 
     <v-text-field
       v-model="type"
@@ -55,8 +54,10 @@ export default {
     return {
       type: '',
       exactMatch: null,
-      heroImage: '',
-      timer: null
+      timer: null,
+
+      heroImageStyle: {
+      }
     }
   },
   computed: {
@@ -82,8 +83,10 @@ export default {
         if (results.query.pages.length) {
           this.exactMatch = results.query.pages[0]
 
-          this.heroImage = this.exactMatch.thumbnail
+          const heroImageUrl = this.exactMatch.thumbnail
             ? this.exactMatch.thumbnail.source : ''
+
+          this.heroImageStyle.backgroundImage = `url("${heroImageUrl}")`
         }
       })
 
@@ -94,6 +97,18 @@ export default {
         if (!results.query) return
 
         results.query.pages.map(this.addItem)
+
+        return results
+      })
+      .then((results) => {
+        if (this.exactMatch.missing === true && results.query.pages.length) {
+          this.exactMatch = results.query.pages[0]
+
+          const heroImageUrl = this.exactMatch.thumbnail
+           ? this.exactMatch.thumbnail.source : ''
+
+          this.heroImageStyle.backgroundImage = `url("${heroImageUrl}")`
+        }
       })
     },
     previewSpeech: function () {
@@ -114,8 +129,10 @@ export default {
 
     selectMatch: function (match) {
       this.exactMatch = match
-      this.heroImage = match.thumbnail
+      const heroImageUrl = match.thumbnail
             ? match.thumbnail.source : ''
+
+      this.heroImageStyle.backgroundImage = `url("${heroImageUrl}")`
     },
 
     alertCustom: (arg) => {
@@ -135,6 +152,7 @@ export default {
 .hero-title-container {
   padding: 0 5px;
   background: rgba(0, 0, 0, .5);
+  display: inline-block;
 }
 
 .hero-description-container {
@@ -147,6 +165,7 @@ export default {
   font-size: 70px;
   cursor: pointer;
   opacity: .7;
+  display: block;
 }
 
 .play-button:hover {
@@ -157,14 +176,42 @@ export default {
 
 .main-default-title {
   font-size: 4em;
+  margin-top: 200px;
   position: relative;
-  top: 200px;
 }
 
 .search__input {
+  max-height: 74px;
   width: 400px;
   margin: auto;
   margin-top: 30px;
   margin-bottom: 70px;
+}
+
+.heroImage {
+  width: 100%;
+  height: 100%;
+
+  background-size: cover;
+}
+
+.hero-container {
+  height: 100%;
+  min-height: 100%;
+  width: 100%;
+  position: relative;
+  display: flex;
+  background-position: center 20%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.hero-caption {
+  color: white;
+  display: inline-block;
+  position: relative;
+  top: 10%;
+  width: auto;
+  margin: auto;
 }
 </style>
