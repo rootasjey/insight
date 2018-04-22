@@ -15,21 +15,23 @@
       </div>
     </div>
 
-    <v-text-field
-      v-model="type"
+    <v-select
+      autocomplete
       autofocus
       class="search__input"
-      name="input-1"
+      :items="suggestions"
       label="Type your search here..."
-      id="testing">
-      </v-text-field>
+      :loading="loadingSuggestions"
+      :search-input.sync="type"
+      >
+    </v-select>
 
     <div class="spell-checker-component" v-if="GET_ITEMS.length">
       <h3>Did you mean ?</h3>
 
       <v-list>
         <template v-for="(item, index) in GET_ITEMS">
-          <v-chip :key="index" v-on:click="selectMatch(item)">
+          <v-chip :key="index" v-on:click="selectMatch(item)" class="chip-motion">
             <v-avatar v-if="item.thumbnail">
               <img v-bind:src="item.thumbnail.source" :alt="item.title">
             </v-avatar>
@@ -52,12 +54,12 @@ export default {
   name: 'Home',
   data () {
     return {
-      type: '',
       exactMatch: null,
+      heroImageStyle: {},
+      loadingSuggestions: false,
+      suggestions: [],
       timer: null,
-
-      heroImageStyle: {
-      }
+      type: ''
     }
   },
   computed: {
@@ -67,10 +69,13 @@ export default {
   },
   watch: {
     type: function (keywords) {
+      if (!keywords) return
+
       clearTimeout(this.timer)
 
       this.timer = setTimeout(() => {
         this.getResults()
+        this.loadingSuggestions = true
       }, 1000)
     }
   },
@@ -78,41 +83,63 @@ export default {
     getResults: function () {
       Wikimedia.search(this.type)
       .then((results) => {
-        if (!results.query) return
-
-        if (results.query.pages.length) {
-          this.exactMatch = results.query.pages[0]
-
-          const heroImageUrl = this.exactMatch.thumbnail
-            ? this.exactMatch.thumbnail.source : ''
-
-          this.heroImageStyle.backgroundImage = `url("${heroImageUrl}")`
+        if (!results.query ||
+            !results.query.pages.length) {
+          return
         }
+
+        const firstMatch = results.query.pages[0]
+
+        if (!firstMatch.terms ||
+            !firstMatch.terms.description ||
+            firstMatch.terms.description[0]
+            .indexOf('Wikimedia disambiguation page') !== -1) {
+          return
+        }
+
+        this.exactMatch = firstMatch
+
+        const heroImageUrl = this.exactMatch.thumbnail
+          ? this.exactMatch.thumbnail.source : ''
+
+        this.heroImageStyle.backgroundImage = `url("${heroImageUrl}")`
       })
 
       Wikimedia.approximativeMatches(this.type)
       .then((results) => {
+        this.loadingSuggestions = false
         this.clearItems()
 
         if (!results.query) return
 
-        results.query.pages.map(this.addItem)
+        this.suggestions = []
+
+        results.query.pages.map((item) => {
+          this.addItem(item)
+          this.suggestions.push(item.title)
+        })
 
         return results
       })
       .then((results) => {
-        if (this.exactMatch.missing === true && results.query.pages.length) {
-          this.exactMatch = results.query.pages[0]
-
-          const heroImageUrl = this.exactMatch.thumbnail
-           ? this.exactMatch.thumbnail.source : ''
-
-          this.heroImageStyle.backgroundImage = `url("${heroImageUrl}")`
+        if (!this.exactMatch ||
+            !this.exactMatch.missing ||
+            !results.query.pages.length) {
+          return
         }
+
+        this.exactMatch = results.query.pages[0]
+
+        const heroImageUrl = this.exactMatch.thumbnail
+          ? this.exactMatch.thumbnail.source : ''
+
+        this.heroImageStyle.backgroundImage = `url("${heroImageUrl}")`
       })
     },
     previewSpeech: function () {
       const synth = window.speechSynthesis
+      synth.cancel()
+
       let textSpeech = ''
 
       if (this.exactMatch.terms && this.exactMatch.terms.description) {
@@ -129,6 +156,7 @@ export default {
 
     selectMatch: function (match) {
       this.exactMatch = match
+
       const heroImageUrl = match.thumbnail
             ? match.thumbnail.source : ''
 
@@ -213,5 +241,13 @@ export default {
   top: 10%;
   width: auto;
   margin: auto;
+}
+
+/* .chip-motion {
+  opacity: .6;
+} */
+
+.chip-motion:hover {
+  color: dodgerblue;
 }
 </style>
