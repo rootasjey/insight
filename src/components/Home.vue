@@ -103,6 +103,20 @@ export default {
           ? this.exactMatch.thumbnail.source : ''
 
         this.heroImageStyle.backgroundImage = `url("${heroImageUrl}")`
+
+        return firstMatch
+      })
+      .then((match) => {
+        if (!match) return
+        console.log(match)
+
+        const imagesTitles = match.images.map((image) => image.title).join('|')
+        console.log(imagesTitles)
+
+        Wikimedia.queryImages(imagesTitles)
+        .then((imagesResults) => {
+          console.log(imagesResults)
+        })
       })
 
       Wikimedia.approximativeMatches(this.type)
