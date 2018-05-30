@@ -1,10 +1,20 @@
 .DS_Store
+!build/icons
+!.gitkeep
+build/*
+coverage
+dist/electron/*
+dist/web/*
 node_modules/
 dist/
+npm-debug.log
 npm-debug.log*
+npm-debug.log.*
 yarn-debug.log*
 yarn-error.log*
 test/unit/coverage
+thumbs.db
+
 
 # Editor directories and files
 .idea
