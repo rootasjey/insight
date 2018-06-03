@@ -1,4 +1,4 @@
-const Wikimedia = {
+export default {
   search: function (keywords) {
     return fetch(`https://en.wikipedia.org/w/api.php?action=query&formatversion=2&format=json&titles=${keywords}&prop=pageimages|images|pageterms&piprop=thumbnail|original&pithumbsize=1000&pilimit=10&wbptterms=description&redirects&origin=*`)
       .then((results) => { return results.json() })
@@ -17,5 +17,3 @@ const Wikimedia = {
       .catch((reason) => console.log)
   }
 }
-
-export default Wikimedia
