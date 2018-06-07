@@ -76,7 +76,7 @@
 
     watch: {
       type (keywords) {
-        if (!keywords) return
+        if (!this._isValidKeywords(keywords)) return
 
         clearTimeout(this.timer)
 
@@ -129,7 +129,7 @@
       },
 
       /**
-       * Select a suggested article
+       * Select a suggested article from chips
        */
       selectMatch (match) {
         this.exactMatch = match
@@ -212,15 +212,11 @@
           .catch(this._notifyNoMatchFound)
       },
 
-      /**
-       * Check if the returned result is not empty
-       */
-      _isValidResult (results) {
-        const query = results.query
+      _isValidKeywords (keywords) {
+        if (!keywords) return false
+        if (!this.exactMatch || !this.exactMatch.title) return true
 
-        const emptyResult = typeof query === 'undefined' || !query.pages.length
-
-        return emptyResult === false
+        return keywords.toLowerCase() !== this.exactMatch.title.toLowerCase()
       },
 
       /**
@@ -237,6 +233,17 @@
           description[0].indexOf('Wikimedia disambiguation page') !== -1
 
         return invalidDescription === false
+      },
+
+      /**
+       * Check if the returned result is not empty
+       */
+      _isValidResult (results) {
+        const query = results.query
+
+        const emptyResult = typeof query === 'undefined' || !query.pages.length
+
+        return emptyResult === false
       },
 
       _notifyNoMatchFound () {
