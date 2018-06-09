@@ -278,21 +278,26 @@
        */
       _queryNewMatchImage () {
         const match = this.exactMatch
-        console.log(match)
-
+        const keyword = match.title.split(' ')[0]
         const imagesTitles = match.images.map((image) => image.title).join('|')
-        console.log(imagesTitles)
 
         return Wikimedia.queryImages(imagesTitles)
           .then((imagesResults) => {
-            console.log(imagesResults)
-            return imagesResults
+            const sortedImages = imagesResults.query.pages.sort((a, b) => {
+              return a.title.indexOf(keyword) > -1 ? -1 : 1
+            })
+
+            return sortedImages[0].imageinfo[0].url
           })
       },
 
-      /** Set the article's background image */
+      /**
+       * Set the article's background image
+       * @param {String} imageUrl images' url
+       */
       _setMatchtBackgroundImage (imageUrl) {
-        this.heroImageStyle.backgroundImage = `url("${imageUrl}")`
+        this.heroImageStyle =
+          {...this.heroImageStyle, backgroundImage: `url("${imageUrl}")`}
       },
 
       /**
