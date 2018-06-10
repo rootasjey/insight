@@ -2,20 +2,27 @@
 
 <template>
   <v-container>
-    <h1 v-if="exactMatch === null" class="main-default-title">insight</h1>
+      <h1 v-if="exactMatch === null" class="main-default-title">insight</h1>
 
-    <div v-if="exactMatch" v-bind:style="heroImageStyle" class="hero-container">
-      <div class="hero-caption">
-        <v-icon class="play-button" v-on:click="previewSpeech">play_circle_filled</v-icon>
-        <div class="hero-title-container">
-            <h1>{{exactMatch.title}}</h1>
-        </div>
+      <div v-if="canShowHeroResult()" v-bind:style="heroImageStyle" class="hero-container">
+        <div class="hero-caption">
+          <v-icon class="play-button" v-on:click="startPresentation">play_circle_filled</v-icon>
+          <div class="hero-title-container">
+              <h1>{{exactMatch.title}}</h1>
+          </div>
 
-        <div class="hero-description-container" v-if="exactMatch.terms">
-          <h3>{{exactMatch.terms.description.join('. ')}}</h3>
+          <div class="hero-description-container" v-if="exactMatch.terms">
+            <h3>{{exactMatch.terms.description.join('. ')}}</h3>
+          </div>
         </div>
       </div>
-    </div>
+    <!-- <v-container v-if="isPresenting === false">
+    </v-container> -->
+
+    <presentation
+      v-bind:initialMatch="this.exactMatch"
+      v-if="isPresenting">
+    </presentation>
 
     <v-select
       autocomplete
@@ -50,6 +57,7 @@
   import Wikimedia from '../services/wikimedia'
   import { mapGetters, mapActions } from 'vuex'
   import { actionTypes, getterTypes } from '../store/modules/articlesActionsTypes'
+  import Presentation from './Presentation'
 
   const { ADD_ITEM_ACTION, CLEAR_ITEMS_ACTION } = actionTypes
   const { GET_ITEMS } = getterTypes
@@ -57,11 +65,14 @@
   export default {
     name: 'Home',
 
+    components: { Presentation },
+
     data () {
       return {
         exactMatch: null,
         heroImageStyle: {},
         loadingSuggestions: false,
+        isPresenting: false,
         suggestions: [],
         timer: null,
         type: ''
@@ -97,11 +108,16 @@
       //  \   /
       //   \/
 
+      canShowHeroResult () {
+        return this.exactMatch && this.isPresenting === false
+      },
+
       /**
        * Get wikipedia articles results from what the user typed
        */
       getResults () {
         this.exactMatch = null
+        this.isPresenting = false
 
         this._getExactResults()
         this._getApproximateResults()
@@ -138,6 +154,10 @@
           ? match.thumbnail.source : ''
 
         this.heroImageStyle.backgroundImage = `url("${heroImageUrl}")`
+      },
+
+      startPresentation () {
+        this.isPresenting = true
       },
 
       // Vuex Store actions
@@ -287,7 +307,11 @@
               return a.title.indexOf(keyword) > -1 ? -1 : 1
             })
 
-            return sortedImages[0].imageinfo[0].url
+            const firstURL = sortedImages[0].imageinfo[0].url
+
+            this.exactMatch.thumbnail = { ...this.exactMatch.thumbnail, source: firstURL }
+
+            return firstURL
           })
       },
 
