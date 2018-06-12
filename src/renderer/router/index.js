@@ -1,3 +1,7 @@
+// ~~~~~~
+// router
+// ~~~~~~
+
 import Vue from 'vue'
 import Router from 'vue-router'
 
@@ -9,6 +13,11 @@ export default new Router({
       path: '/',
       name: 'home',
       component: require('@/components/Home').default
+    },
+    {
+      path: '/presentation',
+      name: 'presentation',
+      component: require('@/components/Presentation').default
     },
     {
       path: '*',

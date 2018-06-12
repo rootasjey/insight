@@ -1,32 +1,46 @@
+// ~~~~~~~~~~~~~~~~~~~~~~
+// Presentation component
+// ~~~~~~~~~~~~~~~~~~~~~~
+
 <template>
-  <v-container>
-    <v-container v-if="presentationType === 'any'">
+  <v-container fluid grid-list-sm
+    class="presentation-container"
+    v-if="presentationType === 'any'">
+
+    <navbar></navbar>
+
+    <v-layout row wrap>
       <introduction
         v-bind:initialMatch="this.match">
       </introduction>
-    </v-container>
+
+      <wiki-intro
+        v-bind:initialMatch="this.match">
+      </wiki-intro>
+    </v-layout>
   </v-container>
 </template>
 
 <script>
+  import Navbar from './Navbar'
   import Introduction from './Presentation/Introduction'
+  import WikiIntro from './Presentation/WikiIntro'
 
   export default {
     name: 'Presentation',
 
-    props: ['initialMatch'],
-
-    components: { Introduction },
-
-    mounted () {
-      this.choosePresentationType()
-    },
+    components: { Navbar, Introduction, WikiIntro },
 
     data () {
       return {
-        match: this.initialMatch,
+        match: null,
         presentationType: null
       }
+    },
+
+    mounted () {
+      this.initialize()
+      this.choosePresentationType()
     },
 
     methods: {
@@ -38,11 +52,22 @@
        */
       choosePresentationType () {
         this.presentationType = 'any'
+      },
+
+      initialize () {
+        this.match = {...this.$route.params}
+
+        if (!this.match || !this.match.title) {
+          this.$router.push({name: 'home'})
+        }
       }
     }
 }
 </script>
 
 <style>
-
+.presentation-container .card {
+  margin: 10px;
+  overflow: auto;
+}
 </style>

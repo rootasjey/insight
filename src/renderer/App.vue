@@ -1,6 +1,10 @@
+// ~~~~~~~~~~~~~~~~~~~~
+// App component - root
+// ~~~~~~~~~~~~~~~~~~~~
+
 <template>
   <div id="app">
-    <v-app>
+    <v-app :dark='false'>
       <v-content>
         <v-container fluid>
           <v-layout justify-center>
@@ -19,7 +23,7 @@
 </script>
 
 <style>
-  #app .container {
+  .container {
     margin: 0;
     padding: 0;
   }

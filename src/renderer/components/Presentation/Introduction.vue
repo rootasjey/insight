@@ -1,6 +1,9 @@
+// ~~~~~~~~~~~~~~~~~~~~~~
+// Introduction component
+// ~~~~~~~~~~~~~~~~~~~~~~
+
 <template>
-  <v-container>
-    <v-card width="400">
+  <v-card width="400" height="500">
       <v-card-media
         :src="match.thumbnail.source"
         height="400px">
@@ -16,7 +19,6 @@
         </div>
       </v-card-title>
     </v-card>
-  </v-container>
 </template>
 
 <script>
@@ -36,6 +38,9 @@ export default {
   },
 
   methods: {
+    /**
+     * Speech to text 1st match article's title & description
+     */
     previewSpeech () {
       const synth = window.speechSynthesis
       synth.cancel()
@@ -52,7 +57,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>
