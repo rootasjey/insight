@@ -157,6 +157,14 @@ export default {
     //   \/
 
     /**
+     *
+     */
+    _autoGoToPresentation () {
+      if (this.GET_SELECTED_ARTICLE.title) {
+        window.setTimeout(() => this.gotToPresentation(), 3000)
+      }
+    },
+    /**
      * Check if the match is valid and set it as a prop
      */
     _checkAndSetMatch (match) {
@@ -198,6 +206,7 @@ export default {
         .then(this._setMatchFromSuggestionsIfAny)
         .then(this._extractMatchImage)
         .then(this._setMatchtBackgroundImage)
+        .then(this._autoGoToPresentation)
         .catch(this._notifyNoSuggestionFound)
     },
 
@@ -210,6 +219,7 @@ export default {
         .then(this._checkAndSetMatch)
         .then(this._extractMatchImage)
         .then(this._setMatchtBackgroundImage)
+        .then(this._autoGoToPresentation)
         .catch(this._notifyNoMatchFound)
     },
 
