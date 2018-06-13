@@ -19,6 +19,22 @@
 
         <span>settings</span>
       </v-tooltip>
+
+      <v-tooltip bottom v-if="isPresentationPlaying">
+        <v-btn flat icon color="pink" slot="activator">
+          <v-icon>stop</v-icon>
+        </v-btn>
+
+        <span>stop presentation</span>
+      </v-tooltip>
+
+      <v-tooltip bottom v-if="isPresentationPlaying === false">
+        <v-btn flat icon color="pink" slot="activator">
+          <v-icon>play_arrow</v-icon>
+        </v-btn>
+
+        <span>play presentation</span>
+      </v-tooltip>
     </v-flex>
 </template>
 
@@ -28,13 +44,22 @@ export default {
 
   data () {
     return {
-      dialogSettings: false
+      dialogSettings: false,
+      isPresentationPlaying: false
     }
   },
 
   methods: {
     goToHome () {
       this.$router.push({name: 'home'})
+    },
+
+    playPresentation () {
+
+    },
+
+    stopPresentation () {
+
     }
   }
 }

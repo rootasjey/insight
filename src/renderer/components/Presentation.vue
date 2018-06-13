@@ -10,58 +10,52 @@
     <navbar></navbar>
 
     <v-layout row wrap>
-      <introduction
-        v-bind:initialMatch="this.match">
-      </introduction>
-
-      <wiki-intro
-        v-bind:initialMatch="this.match">
-      </wiki-intro>
+      <main-illustration></main-illustration>
+      <wiki-intro></wiki-intro>
     </v-layout>
   </v-container>
 </template>
 
 <script>
-  import Navbar from './Navbar'
-  import Introduction from './Presentation/Introduction'
-  import WikiIntro from './Presentation/WikiIntro'
+// Components
+import Navbar from './Navbar'
+import MainIllustration from './Presentation/MainIllustration'
+import WikiIntro from './Presentation/WikiIntro'
 
-  export default {
-    name: 'Presentation',
+export default {
+  name: 'Presentation',
 
-    components: { Navbar, Introduction, WikiIntro },
+  components: { Navbar, MainIllustration, WikiIntro },
 
-    data () {
-      return {
-        match: null,
-        presentationType: null
-      }
+  data () {
+    return {
+      presentationType: null,
+      selectedArticle: this.$store.state.Articles.selectedArticle
+    }
+  },
+
+  mounted () {
+    this.initialize()
+    this.choosePresentationType()
+  },
+
+  methods: {
+    /**
+     * Choose layout according to data type
+     * (data type can be: human, place, thing, ...)
+     * NOTE: it may be a better way to load specific components
+     * into the template
+     */
+    choosePresentationType () {
+      this.presentationType = 'any'
     },
 
-    mounted () {
-      this.initialize()
-      this.choosePresentationType()
-    },
-
-    methods: {
-      /**
-       * Choose layout according to data type
-       * (data type can be: human, place, thing, ...)
-       * NOTE: it may be a better way to load specific components
-       * into the template
-       */
-      choosePresentationType () {
-        this.presentationType = 'any'
-      },
-
-      initialize () {
-        this.match = {...this.$route.params}
-
-        if (!this.match || !this.match.title) {
-          this.$router.push({name: 'home'})
-        }
+    initialize () {
+      if (!this.selectedArticle.title) {
+        this.$router.push({name: 'home'})
       }
     }
+  }
 }
 </script>
 

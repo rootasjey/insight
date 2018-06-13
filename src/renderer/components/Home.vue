@@ -7,22 +7,24 @@
     <navbar></navbar>
 
     <!-- content -->
-    <h1 v-if="exactMatch === null" class="main-default-title">insight</h1>
-
-    <div v-if="exactMatch" v-bind:style="heroImageStyle" class="hero-container">
+    <div v-if="GET_SELECTED_ARTICLE.title" v-bind:style="heroImageStyle" class="hero-container">
       <div class="hero-caption">
         <v-icon class="play-button" v-on:click="gotToPresentation">
           play_circle_filled
         </v-icon>
 
         <div class="hero-title-container">
-            <h1>{{exactMatch.title}}</h1>
+            <h1>{{GET_SELECTED_ARTICLE.title}}</h1>
         </div>
 
-        <div class="hero-description-container" v-if="exactMatch.terms">
-          <h3>{{exactMatch.terms.description.join('. ')}}</h3>
+        <div class="hero-description-container" v-if="GET_SELECTED_ARTICLE.terms">
+          <h3>{{GET_SELECTED_ARTICLE.terms.description.join('. ')}}</h3>
         </div>
       </div>
+    </div>
+
+    <div v-else>
+      <h1 class="main-default-title">insight</h1>
     </div>
 
     <v-select
@@ -55,14 +57,18 @@
 </template>
 
 <script>
+// Components
 import Navbar from './Navbar'
+
+// Services
 import Wikimedia from '../services/wikimedia'
 
+// Vuex
 import { mapGetters, mapActions } from 'vuex'
 import { actionTypes, getterTypes } from '../store/modules/articlesActionsTypes'
 
-const { ADD_ITEM_ACTION, CLEAR_ITEMS_ACTION } = actionTypes
-const { GET_ITEMS } = getterTypes
+const { ADD_ITEM_ACTION, CLEAR_ITEMS_ACTION, SET_SELECTED_ARTICLE_ACTION } = actionTypes
+const { GET_ITEMS, GET_SELECTED_ARTICLE } = getterTypes
 
 export default {
   name: 'Home',
@@ -71,7 +77,6 @@ export default {
 
   data () {
     return {
-      exactMatch: null,
       heroImageStyle: {},
       loadingSuggestions: false,
       suggestions: [],
@@ -82,7 +87,8 @@ export default {
 
   computed: {
     ...mapGetters([
-      GET_ITEMS
+      GET_ITEMS,
+      GET_SELECTED_ARTICLE
     ])
   },
 
@@ -113,21 +119,20 @@ export default {
      * Get wikipedia articles results from what the user typed
      */
     getResults () {
-      this.exactMatch = null
-
+      this.setSelectedArticle({})
       this._getExactResults()
       this._getApproximateResults()
     },
 
     gotToPresentation () {
-      this.$router.push({name: 'presentation', params: this.exactMatch})
+      this.$router.push({name: 'presentation'})
     },
 
     /**
      * Select a suggested article from chips
      */
     selectMatch (match) {
-      this.exactMatch = match
+      this.setSelectedArticle(match)
 
       const heroImageUrl = match.thumbnail
         ? match.thumbnail.source : ''
@@ -138,7 +143,8 @@ export default {
     // Vuex Store actions
     ...mapActions({
       addItem: ADD_ITEM_ACTION,
-      clearItems: CLEAR_ITEMS_ACTION
+      clearItems: CLEAR_ITEMS_ACTION,
+      setSelectedArticle: SET_SELECTED_ARTICLE_ACTION
     }),
 
     // ---------------
@@ -156,9 +162,9 @@ export default {
     _checkAndSetMatch (match) {
       if (!match) throw new Error('No match found')
 
-      this.exactMatch = match
+      this.setSelectedArticle(match)
 
-      return this.exactMatch
+      return this.GET_SELECTED_ARTICLE
     },
 
     /**
@@ -177,8 +183,8 @@ export default {
      * Extract article's image from the 1st match
      */
     _extractMatchImage () {
-      const localImage = this.exactMatch.thumbnail
-        ? this.exactMatch.thumbnail.source : ''
+      const localImage = this.GET_SELECTED_ARTICLE.thumbnail
+        ? this.GET_SELECTED_ARTICLE.thumbnail.source : ''
 
       return localImage || this._queryNewMatchImage()
     },
@@ -209,9 +215,13 @@ export default {
 
     _isValidKeywords (keywords) {
       if (!keywords) return false
-      if (!this.exactMatch || !this.exactMatch.title) return true
 
-      return keywords.toLowerCase() !== this.exactMatch.title.toLowerCase()
+      if (!this.GET_SELECTED_ARTICLE || !this.GET_SELECTED_ARTICLE.title) {
+        return true
+      }
+
+      return keywords.toLowerCase() !==
+        this.GET_SELECTED_ARTICLE.title.toLowerCase()
     },
 
     /**
@@ -272,21 +282,25 @@ export default {
      * Get a new article's image from Wikimedia
      */
     _queryNewMatchImage () {
-      const match = this.exactMatch
-      const keyword = match.title.split(' ')[0]
-      const imagesTitles = match.images.map((image) => image.title).join('|')
+      const selectedArticle = this.GET_SELECTED_ARTICLE
+      const imagesTitles = selectedArticle.images.map((image) => image.title).join('|')
 
       return Wikimedia.queryImages(imagesTitles)
         .then((imagesResults) => {
+          const firstKeyword = selectedArticle.title.split(' ')[0]
+
           const sortedImages = imagesResults.query.pages.sort((a, b) => {
-            return a.title.indexOf(keyword) > -1 ? -1 : 1
+            return a.title.indexOf(firstKeyword) > -1 ? -1 : 1
           })
 
-          const firstURL = sortedImages[0].imageinfo[0].url
+          const firstImageURL = sortedImages[0].imageinfo[0].url
 
-          this.exactMatch.thumbnail = { ...this.exactMatch.thumbnail, source: firstURL }
+          const enhancedArticle = {...selectedArticle}
+          enhancedArticle.thumbnail = { ...selectedArticle.thumbnail, source: firstImageURL }
 
-          return firstURL
+          this.setSelectedArticle(enhancedArticle)
+
+          return firstImageURL
         })
     },
 
@@ -303,13 +317,13 @@ export default {
      * If no exact match is found, set the 1st suggested match
      */
     _setMatchFromSuggestionsIfAny (results) {
-      if (!this.exactMatch ||
-          !this.exactMatch.missing ||
+      if (!this.GET_SELECTED_ARTICLE ||
+          !this.GET_SELECTED_ARTICLE.missing ||
           !results.query.pages.length) {
         return
       }
 
-      this.exactMatch = results.query.pages[0]
+      this.setSelectedArticle(results.query.pages[0])
     }
   }
 }
@@ -385,10 +399,6 @@ export default {
   width: auto;
   margin: auto;
 }
-
-/* .chip-motion {
-  opacity: .6;
-} */
 
 .spell-checker-component {
   text-align: center;
