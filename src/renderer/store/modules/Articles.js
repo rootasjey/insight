@@ -4,16 +4,37 @@
 
 import { actionTypes, getterTypes, mutationTypes } from './articlesActionsTypes'
 
-const { ADD_ITEM_ACTION, CLEAR_ITEMS_ACTION, SET_SELECTED_ARTICLE_ACTION } = actionTypes
+// Actions
+const
+  {
+    ADD_ITEM_ACTION,
+    CLEAR_ITEMS_ACTION,
+    CLEAR_SELECTED_ARTICLE_ACTION,
+    SET_SELECTED_ARTICLE_ACTION
+  } = actionTypes
+
+// Getters
 const { GET_ITEMS, GET_SELECTED_ARTICLE } = getterTypes
-const { ADD_ITEM_MUTATION, CLEAR_ITEMS_MUTATION, SET_SELECTED_ARTICLE_MUTATION } = mutationTypes
+
+// Mutations
+const
+  {
+    ADD_ITEM_MUTATION,
+    CLEAR_ITEMS_MUTATION,
+    CLEAR_SELECTED_ARTICLE_MUTATION,
+    SET_SELECTED_ARTICLE_MUTATION
+  } = mutationTypes
 
 /**
  * Articles' store state
  */
 const state = {
   items: [],
-  selectedArticle: {}
+  selectedArticle: {},
+  textToSpeech: {
+    isActive: false,
+    speeches: []
+  }
 }
 
 const getters = {
@@ -30,6 +51,10 @@ const mutations = {
     state.items = []
   },
 
+  [CLEAR_SELECTED_ARTICLE_MUTATION] (state) {
+    state.selectedArticle = {}
+  },
+
   [SET_SELECTED_ARTICLE_MUTATION] (state, selectedArticle) {
     state.selectedArticle = {...selectedArticle}
   }
@@ -42,6 +67,10 @@ const actions = {
 
   [CLEAR_ITEMS_ACTION] ({ commit }) {
     commit(CLEAR_ITEMS_MUTATION)
+  },
+
+  [CLEAR_SELECTED_ARTICLE_ACTION] ({ commit }) {
+    commit(CLEAR_SELECTED_ARTICLE_MUTATION)
   },
 
   [SET_SELECTED_ARTICLE_ACTION] ({ commit }, selectedArticle) {

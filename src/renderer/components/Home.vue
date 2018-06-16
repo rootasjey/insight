@@ -67,7 +67,14 @@ import Wikimedia from '../services/wikimedia'
 import { mapGetters, mapActions } from 'vuex'
 import { actionTypes, getterTypes } from '../store/modules/articlesActionsTypes'
 
-const { ADD_ITEM_ACTION, CLEAR_ITEMS_ACTION, SET_SELECTED_ARTICLE_ACTION } = actionTypes
+const
+  {
+    ADD_ITEM_ACTION,
+    CLEAR_ITEMS_ACTION,
+    CLEAR_SELECTED_ARTICLE_ACTION,
+    SET_SELECTED_ARTICLE_ACTION
+  } = actionTypes
+
 const { GET_ITEMS, GET_SELECTED_ARTICLE } = getterTypes
 
 export default {
@@ -119,7 +126,8 @@ export default {
      * Get wikipedia articles results from what the user typed
      */
     getResults () {
-      this.setSelectedArticle({})
+      // this.setSelectedArticle({})
+      this.clearSelectedArticle()
       this._getExactResults()
       this._getApproximateResults()
     },
@@ -144,6 +152,7 @@ export default {
     ...mapActions({
       addItem: ADD_ITEM_ACTION,
       clearItems: CLEAR_ITEMS_ACTION,
+      clearSelectedArticle: CLEAR_SELECTED_ARTICLE_ACTION,
       setSelectedArticle: SET_SELECTED_ARTICLE_ACTION
     }),
 
@@ -262,11 +271,11 @@ export default {
     },
 
     _notifyNoMatchFound () {
-      console.log('no match found')
+      // console.log('no match found')
     },
 
     _notifyNoSuggestionFound () {
-      console.log('no sugestion found')
+      // console.log('no sugestion found')
     },
 
     /**

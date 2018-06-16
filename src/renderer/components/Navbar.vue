@@ -39,6 +39,12 @@
 </template>
 
 <script>
+
+import { mapActions } from 'vuex'
+import { actionTypes } from '../store/modules/articlesActionsTypes'
+
+const { CLEAR_SELECTED_ARTICLE_ACTION } = actionTypes
+
 export default {
   name: 'Navbar',
 
@@ -51,6 +57,7 @@ export default {
 
   methods: {
     goToHome () {
+      this.clearSelectedArticle()
       this.$router.push({name: 'home'})
     },
 
@@ -60,7 +67,11 @@ export default {
 
     stopPresentation () {
 
-    }
+    },
+
+    ...mapActions({
+      clearSelectedArticle: CLEAR_SELECTED_ARTICLE_ACTION
+    })
   }
 }
 </script>

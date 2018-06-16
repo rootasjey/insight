@@ -12,6 +12,7 @@
     <v-layout row wrap>
       <main-illustration></main-illustration>
       <wiki-intro></wiki-intro>
+      <speech></speech>
     </v-layout>
   </v-container>
 </template>
@@ -21,11 +22,12 @@
 import Navbar from './Navbar'
 import MainIllustration from './Presentation/MainIllustration'
 import WikiIntro from './Presentation/WikiIntro'
+import Speech from './Presentation/Speech'
 
 export default {
   name: 'Presentation',
 
-  components: { Navbar, MainIllustration, WikiIntro },
+  components: { Navbar, MainIllustration, Speech, WikiIntro },
 
   data () {
     return {

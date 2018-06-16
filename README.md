@@ -37,6 +37,10 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 
 ## Used APIs/sources
 
+### Inspiration
+
+* [Qwiki Techcrunch](https://www.youtube.com/watch?v=EnvtsbCfiAI)
+
 ### Wikimedia
 
 * [Wikimedia API Properties](https://www.mediawiki.org/wiki/API:Properties#revisions_.2F_rv)
