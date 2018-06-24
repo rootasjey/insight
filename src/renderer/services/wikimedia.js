@@ -2,22 +2,68 @@
 // wikimedia service API
 // ~~~~~~~~~~~~~~~~~~~~~
 
+const baseUrl = 'https://en.wikipedia.org/w/api.php'
+
+const usualProps = {
+  action: 'query',
+  formatversion: 2,
+  format: 'json',
+  origin: '*'
+}
+
+const wikimediaRequest = (additionalProps) => {
+  const finalProps = Object.assign({}, {...usualProps}, {...additionalProps})
+  const url = `${baseUrl}?${Object.keys(finalProps).map(key => `${key}=${finalProps[key]}`).join('&')}`
+  return fetch(url)
+    .then(results => results.json())
+    .catch(reason => console.Log(reason))
+}
+
 export default {
+
   search (keywords) {
-    return fetch(`https://en.wikipedia.org/w/api.php?action=query&formatversion=2&format=json&titles=${keywords}&prop=pageimages|images|pageterms|extracts&exintro=true&piprop=thumbnail|original&pithumbsize=1000&pilimit=10&wbptterms=description&redirects&origin=*`)
-      .then((results) => { return results.json() })
-      .catch((reason) => console.log(reason))
+    const specProps = {
+      titles: `${keywords}`,
+      prop: 'pageimages|images|pageterms|extracts',
+      exintro: 'true',
+      piprop: 'thumbnail|original',
+      pithumbsize: '1000',
+      pilimit: '10',
+      wbptterms: 'description',
+      redirects: 'true'
+    }
+    return wikimediaRequest(specProps)
+  },
+
+  details (pageids) {
+    const specProps = {
+      pageids: `${pageids}`,
+      prop: 'extracts'
+    }
+    return wikimediaRequest(specProps)
   },
 
   approximativeMatches (keywords) {
-    return fetch(`https://en.wikipedia.org/w/api.php?action=query&formatversion=2&format=json&generator=prefixsearch&gpssearch=${keywords}&gpslimit=10&prop=pageimages|imageinfo|pageterms|extracts&exintro=true&piprop=thumbnail&pithumbsize=500&pilimit=10&wbptterms=description&origin=*`)
-      .then((results) => { return results.json() })
-      .catch((reason) => console.log(reason))
+    const specProps = {
+      generator: 'prefixsearch',
+      gpssearch: `${keywords}`,
+      gpslimit: '10',
+      prop: 'pageimages|imageinfo|pageterms|extracts',
+      exintro: 'true',
+      piprop: 'thumbnail',
+      pithumbsize: '500',
+      pilimit: '10',
+      wbptterms: 'description'
+    }
+    return wikimediaRequest(specProps)
   },
 
   queryImages (keywords) {
-    return fetch(`https://en.wikipedia.org/w/api.php?action=query&formatversion=2&format=json&titles=${keywords}&prop=imageinfo&iiprop=url&origin=*`)
-      .then((results) => { return results.json() })
-      .catch((reason) => console.log(reason))
+    const specProps = {
+      titles: `${keywords}`,
+      prop: 'imageinfo',
+      iiprop: 'url'
+    }
+    return wikimediaRequest(specProps)
   }
 }
