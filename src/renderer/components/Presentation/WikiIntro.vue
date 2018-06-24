@@ -5,20 +5,42 @@
         Overview
       </h1>
 
-      <div v-html="selectedArticle.extract">
+      <div v-html="GET_SELECTED_ARTICLE.extract">
       </div>
+      <v-btn fab dark color="indigo" v-if="buttonMore" v-on:click="getSelectedArticleDetails">
+        <v-icon dark>add</v-icon>
+      </v-btn>
     </v-card-title>
   </v-card>
 </template>
 
 <script>
+
+// Vuex
+import { mapGetters, mapActions } from 'vuex'
+
+// Services
+import Wikimedia from '../../services/wikimedia'
+
+import { getterTypes, actionTypes } from '../../store/modules/articlesActionsTypes'
+
+const { SET_SELECTED_ARTICLE_ACTION } = actionTypes
+
+const { GET_SELECTED_ARTICLE } = getterTypes
+
 export default {
   name: 'WikiIntro',
 
   data () {
     return {
-      selectedArticle: this.$store.state.Articles.selectedArticle
+      buttonMore: true
     }
+  },
+
+  computed: {
+    ...mapGetters([
+      GET_SELECTED_ARTICLE
+    ])
   },
 
   methods: {
@@ -37,6 +59,29 @@ export default {
       speech.voice = synth.getVoices()[32]
 
       synth.speak(speech)
+    },
+
+    /**
+     *  Fetch more detail for presentation
+     */
+    getSelectedArticleDetails () {
+      Wikimedia.details(this.GET_SELECTED_ARTICLE.pageid)
+        .then(this._fetchSelectedArticleDetails)
+    },
+
+    // Vuex Store actions
+    ...mapActions({
+      setSelectedArticle: SET_SELECTED_ARTICLE_ACTION
+    }),
+
+    /**
+     * update store with new extract
+     */
+    _fetchSelectedArticleDetails (result) {
+      // maybe move _isValidResult to be able to call it here, but we can suppose if you're on this page so article exist and there is no reason (except for a bug) to not be able to get a valid result
+      const updatedArticle = Object.assign({}, {...this.GET_SELECTED_ARTICLE}, {extract: result.query.pages[0].extract})
+      this.setSelectedArticle(updatedArticle)
+      this.buttonMore = false
     }
   }
 }
