@@ -1,3 +1,5 @@
+:warning: This repository is archived and read-only (and its depencies are highly outdated).
+
 # insight
 > Knowledge modernized
 
